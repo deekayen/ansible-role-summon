@@ -1,0 +1,29 @@
+---
+
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode11
+      language: generic
+
+install:
+  - brew install ansible-lint
+  - sudo python /tmp/get-pip.py
+  - sudo pip install ansible-review
+  - sudo pip install yamllint
+
+before_script:
+  - yamllint --version
+  - ansible-lint --version
+  - ansible-review --version
+  - ansible --version
+
+script:
+  - yamllint .
+  - git ls-files | grep yml | xargs ansible-lint --exclude=/Users/travis/.ansible/roles
+  - git ls-files | grep yml | xargs ansible-review -q
+  - ansible-playbook --syntax-check --list-tasks -i 127.0.0.1, tests/test.yml
+  - ansible-playbook --check --diff -i 127.0.0.1, -c local tests/test.yml
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/

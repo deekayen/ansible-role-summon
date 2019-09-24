@@ -1,0 +1,21 @@
+galaxy_info:
+  role_name: summon
+  author: David Norman
+  description: Install Summon by CyberArk.
+
+  issue_tracker_url: https://github.com/deekayen/ansible-role-summon/issues
+
+  license: BSD-3-Clause
+
+  min_ansible_version: 1.9
+
+  platforms:
+    - name: macOS
+      versions:
+        - Mojave
+
+  galaxy_tags:
+    - cyberark
+    - summon
+
+dependencies: []

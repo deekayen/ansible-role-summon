@@ -1,0 +1,31 @@
+---
+
+- name: Tap CyberArk tools.
+  homebrew_tap:
+   name: cyberark/tools
+
+- name: Install Summon by CyberArk.
+  homebrew:
+    name: cyberark/tools/summon
+
+- name: Install keyring python library.
+  pip:
+    name: keyring
+
+- name: Setup summon keyring path.
+  file:
+    path: /usr/local/lib/summon
+    state: directory
+
+- name: Download the ring python script.
+  get_url:
+    url: https://raw.githubusercontent.com/conjurinc/summon-keyring/master/ring.py
+    dest: /usr/local/lib/summon/ring.py
+
+# https://github.com/conjurinc/summon-keyring/commit/f954e6d12bfdd3b808e9668cbd0a0a6fe4a5bee4
+# says naming it as keyring.py may make import conflicts.
+#- name: Setup a symlink for the summon ring script.
+#  file:
+#    src: /usr/local/lib/summon/ring.py
+#    path: /usr/local/lib/summon/keyring.py
+#    state: link
