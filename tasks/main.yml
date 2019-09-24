@@ -16,6 +16,7 @@
   file:
     path: /usr/local/lib/summon
     state: directory
+  check_mode: no
 
 - name: Download the ring python script.
   get_url:
