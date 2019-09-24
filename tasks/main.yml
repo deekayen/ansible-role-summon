@@ -2,7 +2,7 @@
 
 - name: Tap CyberArk tools.
   homebrew_tap:
-   name: cyberark/tools
+    name: cyberark/tools
 
 - name: Install Summon by CyberArk.
   homebrew:
