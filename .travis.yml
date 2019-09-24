@@ -11,6 +11,7 @@ before_install:
   - wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py
 
 install:
+  - ansible-galaxy install --force -r tests/requirements.yml
   - brew install ansible-lint
   - sudo python /tmp/get-pip.py
   - sudo pip install ansible-review
