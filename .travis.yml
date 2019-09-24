@@ -6,6 +6,10 @@ matrix:
       osx_image: xcode11
       language: generic
 
+before_install:
+  - brew update
+  - wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py
+
 install:
   - brew install ansible-lint
   - sudo python /tmp/get-pip.py
