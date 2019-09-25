@@ -12,7 +12,7 @@ galaxy_info:
   min_ansible_version: 1.9
 
   platforms:
-    - name: macOS
+    - name: MacOSX
       versions:
         - 10.14
 
