@@ -14,7 +14,7 @@ galaxy_info:
   platforms:
     - name: macOS
       versions:
-        - Mojave
+        - 10.14
 
   galaxy_tags:
     - cyberark
