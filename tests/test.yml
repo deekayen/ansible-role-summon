@@ -5,5 +5,4 @@
   become: true
 
   roles:
-    - src: git+https://github.com/deekayen/ansible-role-summon.git
-      name: deekayen.summon
+    - ansible-role-summon
