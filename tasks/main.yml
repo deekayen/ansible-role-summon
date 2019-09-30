@@ -11,6 +11,7 @@
 - name: Install keyring python library.
   pip:
     name: keyring
+    executable: pip3
 
 - name: Setup summon keyring path.
   file:
