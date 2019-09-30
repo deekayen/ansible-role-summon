@@ -11,6 +11,12 @@ Requirements
 
 [Homebrew](https://brew.sh)
 
+If the cyberark tap fails, try:
+
+```
+sudo xcodebuild -license accept
+```
+
 Role Variables
 --------------
 
