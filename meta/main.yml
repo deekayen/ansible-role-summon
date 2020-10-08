@@ -5,6 +5,7 @@ galaxy_info:
   author: David Norman
   description: Install Summon by CyberArk.
 
+  github_branch: main
   issue_tracker_url: https://github.com/deekayen/ansible-role-summon/issues
 
   license: BSD-3-Clause
@@ -14,7 +15,7 @@ galaxy_info:
   platforms:
     - name: MacOSX
       versions:
-        - 10.14
+        - 10.15
 
   galaxy_tags:
     - cyberark
