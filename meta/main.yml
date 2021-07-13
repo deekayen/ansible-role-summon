@@ -2,6 +2,7 @@
 
 galaxy_info:
   role_name: summon
+  namespace: deekayen
   author: David Norman
   description: Install Summon by CyberArk.
 
@@ -15,7 +16,7 @@ galaxy_info:
   platforms:
     - name: MacOSX
       versions:
-        - 10.15
+        - "11.0"
 
   galaxy_tags:
     - cyberark

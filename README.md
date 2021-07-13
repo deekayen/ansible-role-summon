@@ -1,7 +1,7 @@
 Summon
-=========
+======
 
-[![Build Status](https://travis-ci.org/deekayen/ansible-role-summon.svg?branch=main)](https://travis-ci.org/deekayen/ansible-role-summon) [![Project Status: Concept – Minimal or no implementation has been done yet, or the repository is only intended to be a limited example, demo, or proof-of-concept.](https://www.repostatus.org/badges/latest/concept.svg)](https://www.repostatus.org/#concept)
+[![CI](https://github.com/deekayen/ansible-role-summon/actions/workflows/ci.yml/badge.svg)](https://github.com/deekayen/ansible-role-summon/actions/workflows/ci.yml) [![Project Status: Concept – Minimal or no implementation has been done yet, or the repository is only intended to be a limited example, demo, or proof-of-concept.](https://www.repostatus.org/badges/latest/concept.svg)](https://www.repostatus.org/#concept)
 
 Install [Summon](https://cyberark.github.io/summon/) from [CyberArk](https://github.com/cyberark).
 

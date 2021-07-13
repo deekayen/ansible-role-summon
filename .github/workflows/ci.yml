@@ -1,0 +1,45 @@
+---
+
+name: CI
+'on':
+  pull_request:
+  push:
+    branches:
+      - main
+
+defaults:
+  run:
+    working-directory: 'deekayen.summon'
+
+jobs:
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v2
+        with:
+          path: 'deekayen.summon'
+
+      - name: Install test dependencies.
+        run: sudo apt install ansible-lint
+
+      - name: Lint ansible.
+        run: ansible-lint
+
+# https://docs.github.com/en/free-pro-team@latest/actions/reference/specifications-for-github-hosted-runners#supported-software
+  install:
+    name: Playbook
+    runs-on: macos-11.0
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v2
+        with:
+          path: 'deekayen.summon'
+
+      - name: Install ansible.
+        run: brew install ansible
+
+      - name: Run playbook.
+        run: ansible-playbook --diff -i 127.0.0.1, -c local --skip-tags no_ci tests/test.yml
