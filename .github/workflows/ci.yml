@@ -35,6 +35,10 @@ jobs:
   macos:
     name: macOS
     runs-on: macos-latest
+    env:
+      # Anonymous GitHub API calls from shared runners hit the rate limit.
+      HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
+      HOMEBREW_NO_AUTO_UPDATE: '1'
     steps:
       - name: Check out the codebase.
         uses: actions/checkout@v4
