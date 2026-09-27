@@ -24,7 +24,9 @@ Homebrew's Python does not allow pip installs, and `ring.py` is pointed at
 that virtualenv's Python.
 
 CI runs the role twice on the current GitHub macOS runner and checks the
-result with testinfra.
+result with testinfra. It skips the two Homebrew tasks (tag `homebrew`),
+because the cyberark/tools tap queries the GitHub API for every formula it
+loads, which the shared runners' rate limits reject.
 
 Role Variables
 --------------

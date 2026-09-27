@@ -8,11 +8,15 @@
 - name: Tap CyberArk tools.
   community.general.homebrew_tap:
     name: cyberark/tools
+  tags:
+    - homebrew
 
 - name: Install Summon by CyberArk.
   community.general.homebrew:
     name: cyberark/tools/summon
     state: present
+  tags:
+    - homebrew
 
 - name: Setup summon provider and keyring directories.
   ansible.builtin.file:
