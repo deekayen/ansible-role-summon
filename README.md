@@ -20,8 +20,9 @@ sudo xcodebuild -license accept
 The role installs Summon from Homebrew as your user, and uses `become` for
 the steps under `/usr/local`, so run it with `--ask-become-pass` (or
 passwordless sudo). The keyring library goes into its own virtualenv, since
-Homebrew's Python does not allow pip installs, and `ring.py` is pointed at
-that virtualenv's Python.
+Homebrew's Python does not allow pip installs, and `ring.py` in the provider
+directory is a wrapper that runs the upstream script with that virtualenv's
+Python.
 
 CI runs the role twice on the current GitHub macOS runner and checks the
 result with testinfra. It skips the two Homebrew tasks (tag `homebrew`),

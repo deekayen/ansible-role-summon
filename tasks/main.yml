@@ -51,21 +51,24 @@
   changed_when: true
   when: summon_keyring_check.rc | default(1) != 0
 
+# Keep the upstream script unmodified in the virtualenv; raw GitHub downloads
+# ignore conditional requests, so a patched copy would be replaced each run.
 - name: Download the ring python script.
   ansible.builtin.get_url:
     url: "{{ summon_ring_url }}"
-    dest: "{{ summon_provider_dir }}/ring.py"
-    mode: "0755"
+    dest: "{{ summon_keyring_venv }}/ring.py"
+    mode: "0644"
   become: true
 
-# ring.py asks for "python", which current macOS does not provide.
-- name: Run the ring script with the keyring virtualenv.
-  ansible.builtin.lineinfile:
-    path: "{{ summon_provider_dir }}/ring.py"
-    regexp: '^#!'
-    line: "#!{{ summon_keyring_venv }}/bin/python"
-    insertbefore: BOF
-    firstmatch: true
+# ring.py asks for "python", which current macOS does not provide, so the
+# provider is a wrapper that runs it with the keyring virtualenv.
+- name: Install the ring.py provider wrapper.
+  ansible.builtin.copy:
+    dest: "{{ summon_provider_dir }}/ring.py"
+    mode: "0755"
+    content: |
+      #!/bin/sh
+      exec "{{ summon_keyring_venv }}/bin/python" "{{ summon_keyring_venv }}/ring.py" "$@"
   become: true
 
 # https://github.com/conjurinc/summon-keyring/commit/f954e6d12bfdd3b808e9668cbd0a0a6fe4a5bee4
