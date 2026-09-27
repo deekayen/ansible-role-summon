@@ -1,0 +1,16 @@
+---
+- name: Assert the summon paths are absolute.
+  ansible.builtin.assert:
+    that:
+      - summon_provider_dir is match('^/')
+      - summon_keyring_venv is match('^/')
+    fail_msg: summon_provider_dir and summon_keyring_venv must be absolute paths.
+    quiet: true
+
+# Summon treats every file in the provider directory as a provider.
+- name: Assert the keyring virtualenv is outside the provider directory.
+  ansible.builtin.assert:
+    that:
+      - not (summon_keyring_venv ~ '/').startswith(summon_provider_dir ~ '/')
+    fail_msg: summon_keyring_venv must not be inside summon_provider_dir.
+    quiet: true

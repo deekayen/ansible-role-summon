@@ -1,6 +1,8 @@
 ---
-- hosts: localhost
+- name: Apply the summon role.
+  hosts: localhost
   connection: local
+  gather_facts: false
 
   roles:
-    - deekayen.summon
+    - role: deekayen.summon

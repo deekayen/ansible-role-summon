@@ -1,35 +1,60 @@
 ---
+- name: Validate role variables.
+  ansible.builtin.import_tasks: assert.yml
+  tags:
+    - always
 
+# Homebrew refuses to run as root, so only the /usr/local steps use become.
 - name: Tap CyberArk tools.
-  homebrew_tap:
+  community.general.homebrew_tap:
     name: cyberark/tools
 
 - name: Install Summon by CyberArk.
-  homebrew:
+  community.general.homebrew:
     name: cyberark/tools/summon
+    state: present
 
-- name: Install keyring python library.
-  pip:
-    name: keyring
-    executable: pip3
-
-- name: Setup summon keyring path.
-  file:
-    path: /usr/local/lib/summon
+- name: Setup summon provider and keyring directories.
+  ansible.builtin.file:
+    path: "{{ item }}"
     state: directory
-    mode: 0755
-  check_mode: no
+    mode: "0755"
+  loop:
+    - "{{ summon_provider_dir }}"
+    - "{{ summon_keyring_venv | dirname }}"
+  become: true
+  check_mode: false
+
+# Homebrew's Python refuses pip installs (PEP 668), so keep keyring in a
+# dedicated virtualenv outside the provider directory.
+- name: Install the keyring python library in a virtualenv.
+  ansible.builtin.pip:
+    name: keyring
+    virtualenv: "{{ summon_keyring_venv }}"
+    virtualenv_command: /usr/bin/python3 -m venv
+  become: true
 
 - name: Download the ring python script.
-  get_url:
-    url: https://raw.githubusercontent.com/conjurinc/summon-keyring/master/ring.py
-    dest: /usr/local/lib/summon/ring.py
-    mode: 0755
+  ansible.builtin.get_url:
+    url: "{{ summon_ring_url }}"
+    dest: "{{ summon_provider_dir }}/ring.py"
+    mode: "0755"
+  become: true
+
+# ring.py asks for "python", which current macOS does not provide.
+- name: Run the ring script with the keyring virtualenv.
+  ansible.builtin.lineinfile:
+    path: "{{ summon_provider_dir }}/ring.py"
+    regexp: '^#!'
+    line: "#!{{ summon_keyring_venv }}/bin/python"
+    insertbefore: BOF
+    firstmatch: true
+  become: true
 
 # https://github.com/conjurinc/summon-keyring/commit/f954e6d12bfdd3b808e9668cbd0a0a6fe4a5bee4
 # says naming it as keyring.py may make import conflicts.
-#- name: Setup a symlink for the summon ring script.
-#  file:
-#    src: /usr/local/lib/summon/ring.py
-#    path: /usr/local/lib/summon/keyring.py
-#    state: link
+# - name: Setup a symlink for the summon ring script.
+#   file:
+#     src: /usr/local/lib/summon/ring.py
+#     path: /usr/local/lib/summon/keyring.py
+#     state: link

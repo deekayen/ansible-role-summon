@@ -1,5 +1,4 @@
 ---
-
 name: CI
 'on':
   pull_request:
@@ -7,42 +6,65 @@ name: CI
     branches:
       - main
 
-defaults:
-  run:
-    working-directory: 'deekayen.summon'
-
 jobs:
 
   lint:
     name: Lint
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Check out the codebase.
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.
+        uses: actions/setup-python@v5
         with:
-          path: 'deekayen.summon'
+          python-version: '3.12'
 
       - name: Install test dependencies.
-        run: sudo apt install ansible-lint
+        run: pip3 install ansible-lint flake8
 
-      - name: Lint ansible.
-        run: ansible-lint
+      - name: Install required collections.
+        run: ansible-galaxy collection install community.general
 
-# https://docs.github.com/en/free-pro-team@latest/actions/reference/specifications-for-github-hosted-runners#supported-software
-  install:
-    name: Playbook
-    runs-on: macos-11.0
+      - name: Lint code.
+        run: ansible-lint --profile production
+
+      - name: Lint Python tests.
+        run: flake8 tests/
+
+  macos:
+    name: macOS
+    runs-on: macos-latest
     steps:
       - name: Check out the codebase.
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.
+        uses: actions/setup-python@v5
         with:
-          path: 'deekayen.summon'
+          python-version: '3.12'
 
-      - name: Install ansible.
-        run: brew install ansible
+      - name: Install test dependencies.
+        run: pip3 install ansible-core pytest-testinfra
 
-      - name: Create ansible.cfg with correct roles_path.
-        run: printf '[defaults]\nroles_path=../' >ansible.cfg
+      - name: Install required collections.
+        run: ansible-galaxy collection install community.general
 
-      - name: Run playbook.
-        run: ansible-playbook --diff -i 127.0.0.1, -c local --skip-tags no_ci tests/test.yml
+      - name: Make the role resolvable by its Galaxy name.
+        run: mkdir -p .ansible/roles && ln -sfn "$PWD" .ansible/roles/deekayen.summon
+
+      - name: Run the role.
+        run: ansible-playbook -i tests/inventory tests/test.yml
+        env:
+          ANSIBLE_ROLES_PATH: .ansible/roles
+          ANSIBLE_FORCE_COLOR: '1'
+
+      - name: Run the role again to check idempotence.
+        run: |
+          ansible-playbook -i tests/inventory tests/test.yml | tee idempotence.log
+          grep -qE 'changed=0 +unreachable=0 +failed=0' idempotence.log
+        env:
+          ANSIBLE_ROLES_PATH: .ansible/roles
+
+      - name: Verify with testinfra.
+        run: py.test -v tests/test_default.py

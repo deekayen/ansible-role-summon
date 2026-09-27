@@ -1,8 +1,7 @@
 ---
-
 galaxy_info:
-  role_name: summon
   namespace: deekayen
+  role_name: summon
   author: David Norman
   description: Install Summon by CyberArk.
 
@@ -10,16 +9,16 @@ galaxy_info:
   issue_tracker_url: https://github.com/deekayen/ansible-role-summon/issues
 
   license: BSD-3-Clause
-
-  min_ansible_version: 1.9
+  min_ansible_version: "2.15"
 
   platforms:
-    - name: MacOSX
+    - name: macOS
       versions:
-        - "11.0"
+        - all
 
   galaxy_tags:
     - cyberark
     - summon
+    - secrets
 
 dependencies: []

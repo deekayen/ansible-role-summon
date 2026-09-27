@@ -1,0 +1,6 @@
+---
+# Summon looks for providers here unless SUMMON_PROVIDER_PATH says otherwise.
+summon_provider_dir: /usr/local/lib/summon
+# Virtualenv holding the keyring library for the ring.py provider.
+summon_keyring_venv: /usr/local/share/summon-keyring
+summon_ring_url: https://raw.githubusercontent.com/conjurinc/summon-keyring/master/ring.py

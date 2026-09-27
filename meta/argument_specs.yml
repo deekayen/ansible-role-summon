@@ -1,0 +1,25 @@
+---
+argument_specs:
+  main:
+    short_description: Install Summon by CyberArk with the keyring provider.
+    description:
+      - Installs Summon from the cyberark/tools Homebrew tap and sets up the
+        summon-keyring ring.py provider with the keyring library in a
+        dedicated virtualenv.
+    author:
+      - David Norman
+    options:
+      summon_provider_dir:
+        type: path
+        default: /usr/local/lib/summon
+        description: Directory Summon loads providers from.
+      summon_keyring_venv:
+        type: path
+        default: /usr/local/share/summon-keyring
+        description: >-
+          Virtualenv for the keyring library. Must be outside
+          summon_provider_dir.
+      summon_ring_url:
+        type: str
+        default: https://raw.githubusercontent.com/conjurinc/summon-keyring/master/ring.py
+        description: URL of the summon-keyring ring.py provider script.

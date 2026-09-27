@@ -17,10 +17,21 @@ If the cyberark tap fails, try:
 sudo xcodebuild -license accept
 ```
 
+The role installs Summon from Homebrew as your user, and uses `become` for
+the steps under `/usr/local`, so run it with `--ask-become-pass` (or
+passwordless sudo). The keyring library goes into its own virtualenv, since
+Homebrew's Python does not allow pip installs, and `ring.py` is pointed at
+that virtualenv's Python.
+
+CI runs the role twice on the current GitHub macOS runner and checks the
+result with testinfra.
+
 Role Variables
 --------------
 
-None.
+    summon_provider_dir: /usr/local/lib/summon
+    summon_keyring_venv: /usr/local/share/summon-keyring
+    summon_ring_url: https://raw.githubusercontent.com/conjurinc/summon-keyring/master/ring.py
 
 Dependencies
 ------------
@@ -40,7 +51,7 @@ Including an example of how to use your role (for instance, with variables passe
 License
 -------
 
-BSD
+BSD-3-Clause
 
 Author Information
 ------------------
