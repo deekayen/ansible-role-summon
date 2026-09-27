@@ -55,6 +55,15 @@ jobs:
       - name: Install required collections.
         run: ansible-galaxy collection install community.general
 
+      - name: Check GitHub API access for the cyberark tap.
+        run: |
+          curl -s -o /dev/null -w 'with token: %{http_code}\n' \
+            -H "Authorization: token $HOMEBREW_GITHUB_PACKAGE_TOKEN" \
+            https://api.github.com/repos/cyberark/conjur-cli-go/releases/latest
+          curl -s -o /dev/null -w 'anonymous: %{http_code}\n' \
+            https://api.github.com/repos/cyberark/conjur-cli-go/releases/latest
+          brew --env 2>/dev/null | grep -c HOMEBREW_GITHUB || true
+
       - name: Make the role resolvable by its Galaxy name.
         run: mkdir -p .ansible/roles && ln -sfn "$PWD" .ansible/roles/deekayen.summon
 
