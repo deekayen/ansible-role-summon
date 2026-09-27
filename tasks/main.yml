@@ -25,14 +25,27 @@
   become: true
   check_mode: false
 
-# Homebrew's Python refuses pip installs (PEP 668), so keep keyring in a
-# dedicated virtualenv outside the provider directory.
-- name: Install the keyring python library in a virtualenv.
-  ansible.builtin.pip:
-    name: keyring
-    virtualenv: "{{ summon_keyring_venv }}"
-    virtualenv_command: /usr/bin/python3 -m venv
+# Homebrew's Python refuses pip installs (PEP 668) and lacks the packaging
+# library the pip module needs, so build a dedicated virtualenv outside the
+# provider directory with the venv and pip commands.
+- name: Create the keyring virtualenv.
+  ansible.builtin.command:
+    cmd: /usr/bin/python3 -m venv {{ summon_keyring_venv }}
+    creates: "{{ summon_keyring_venv }}/bin/python"
   become: true
+
+- name: Check for the keyring library in the virtualenv.
+  ansible.builtin.command: "{{ summon_keyring_venv }}/bin/python -c 'import keyring'"
+  register: summon_keyring_check
+  changed_when: false
+  failed_when: false
+  check_mode: false
+
+- name: Install the keyring python library in the virtualenv.
+  ansible.builtin.command: "{{ summon_keyring_venv }}/bin/python -m pip install keyring"
+  become: true
+  changed_when: true
+  when: summon_keyring_check.rc | default(1) != 0
 
 - name: Download the ring python script.
   ansible.builtin.get_url:
